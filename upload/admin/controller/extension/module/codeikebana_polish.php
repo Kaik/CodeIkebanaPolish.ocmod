@@ -94,60 +94,36 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
     );
 
     // VAT
-//        array(
-//            'name' => 'VAT 23%',
-//            'rate' => 23.0,
-//            'type' => 'P',
-//            'geo_zone_id' => $geo_zone_id,
-//            'tax_rate_customer_group' => array($this->config->get('config_customer_group_id'))
-//        )
-//        array(
-//            'name' => 'VAT 8%',
-//            'rate' => 8,
-//            'type' => 'P',
-//            'geo_zone_id' => $geo_zone_id,
-//            'tax_rate_customer_group' => array($this->config->get('config_customer_group_id'))
-//        )
-//        array(
-//            'name' => 'VAT 5%',
-//            'rate' => 5,
-//            'type' => 'P',
-//            'geo_zone_id' => $geo_zone_id,
-//            'tax_rate_customer_group' => array($this->config->get('config_customer_group_id'))
-//        )
-//        array(
-//            'title' => 'VAT 23%',
-//            'description' => 'Podatek VAT 23%',
-//            'tax_rule' => array(
-//                array(
-//                    'tax_rate_id' => $tax_rate_23_id,
-//                    'based' => 'shipping',
-//                    'priority' => '0'
-//                )
-//            )
-//        )
-//        array(
-//            'title' => 'VAT 8%',
-//            'description' => 'Podatek VAT 8%',
-//            'tax_rule' => array(
-//                array(
-//                    'tax_rate_id' => $tax_rate_8_id,
-//                    'based' => 'shipping',
-//                    'priority' => '0'
-//                )
-//            )
-//        )
-//        array(
-//            'title' => 'VAT 5%',
-//            'description' => 'Podatek VAT 5%',
-//            'tax_rule' => array(
-//                array(
-//                    'tax_rate_id' => $tax_rate_5_id,
-//                    'based' => 'shipping',
-//                    'priority' => '0'
-//                )
-//            )
-//        )
+    private $tax_23 = array(
+        'name' => 'VAT 23%',
+        'rate' => 23.0,
+        'type' => 'P',
+    );
+    private $tax_8 = array(
+        'name' => 'VAT 8%',
+        'rate' => 8,
+        'type' => 'P',
+    );
+    private $tax_5 = array(
+        'name' => 'VAT 5%',
+        'rate' => 5,
+        'type' => 'P',
+    );
+
+    private $tax_class_23 = array(
+        'title' => 'VAT 23%',
+        'description' => 'Podatek VAT 23%',
+    );
+
+    private $tax_class_8 = array(
+        'title' => 'VAT 8%',
+        'description' => 'Podatek VAT 8%',
+    );
+
+    private $tax_class_5 = array(
+        'title' => 'VAT 5%',
+        'description' => 'Podatek VAT 5%',
+    );
 
     public function install()
     {
@@ -256,104 +232,111 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
                 }
             }
         }
-//
-//// Add tax classes and rates
-//
-//if ($geo_zone_id) {
-//
-//    // Add tax rates
-//
-//    $this->load->model('localisation/tax_rate');
-//
-//    $tax_rate_23_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 23%'");
-//
-//    if ($tax_rate_23_query->num_rows == 0) {
-//        $this->model_localisation_tax_rate->addTaxRate();
-//
-//        $tax_rate_23_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 23%'");
-//        $tax_rate_23_id = $tax_rate_23_query->row['tax_rate_id'];
-//    } else {
-//        $tax_rate_23_id = $tax_rate_23_query->row['tax_rate_id'];
-//    }
-//
-//
-//    $tax_rate_8_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 8%'");
-//
-//    if ($tax_rate_8_query->num_rows == 0) {
-//        $this->model_localisation_tax_rate->addTaxRate();
-//
-//        $tax_rate_8_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 8%'");
-//        $tax_rate_8_id = $tax_rate_8_query->row['tax_rate_id'];
-//    } else {
-//        $tax_rate_8_id = $tax_rate_8_query->row['tax_rate_id'];
-//    }
-//
-//    $tax_rate_5_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 5%'");
-//
-//    if ($tax_rate_5_query->num_rows == 0) {
-//        $this->model_localisation_tax_rate->addTaxRate();
-//
-//        $tax_rate_5_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 5%'");
-//        $tax_rate_5_id = $tax_rate_5_query->row['tax_rate_id'];
-//    } else {
-//        $tax_rate_5_id = $tax_rate_5_query->row['tax_rate_id'];
-//    }
-//
-//    // Add tax classes
-//
-//    $this->load->model('localisation/tax_class');
-//
-//    $tax_class_23_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_class WHERE title = 'VAT 23%'");
-//
-//    if ($tax_class_23_query->num_rows == 0) {
-//
-//        $this->model_localisation_tax_class->addTaxClass();
-//    } elseif ($tax_class_23_query->num_rows > 0) {
-//        foreach ($tax_class_23_query->rows as $tax_class_23) {
-//            $tax_rule_23_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_rule WHERE tax_class_id = '" . (int) $tax_class_23['tax_class_id'] . "' AND tax_rate_id = '" . (int) $tax_rate_23_id . "'");
-//
-//            if ($tax_rule_23_query->num_rows == 0) {
-//                $this->db->query("INSERT INTO " . DB_PREFIX . "tax_rule SET tax_class_id = '" . (int) $tax_class_23['tax_class_id'] . "', tax_rate_id = '" . (int) $tax_rate_23_id . "', based = 'shipping', priority = '0'");
-//            }
-//        }
-//    }
-//
-//    $tax_class_8_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_class WHERE title = 'VAT 8%'");
-//
-//    if ($tax_class_8_query->num_rows == 0) {
-//
-//        $this->model_localisation_tax_class->addTaxClass();
-//    } elseif ($tax_class_8_query->num_rows > 0) {
-//        foreach ($tax_class_8_query->rows as $tax_class_8) {
-//            $tax_rule_8_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_rule WHERE tax_class_id = '" . (int) $tax_class_8['tax_class_id'] . "' AND tax_rate_id = '" . (int) $tax_rate_8_id . "'");
-//
-//            if ($tax_rule_8_query->num_rows == 0) {
-//                $this->db->query("INSERT INTO " . DB_PREFIX . "tax_rule SET tax_class_id = '" . (int) $tax_class_8['tax_class_id'] . "', tax_rate_id = '" . (int) $tax_rate_8_id . "', based = 'shipping', priority = '0'");
-//            }
-//        }
-//    }
-//
-//    $tax_class_5_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_class WHERE title = 'VAT 5%'");
-//
-//    if ($tax_class_5_query->num_rows == 0) {
-//
-//        $this->model_localisation_tax_class->addTaxClass();
-//    } elseif ($tax_class_5_query->num_rows > 0) {
-//        foreach ($tax_class_5_query->rows as $tax_class_5) {
-//            $tax_rule_5_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_rule WHERE tax_class_id = '" . (int) $tax_class_5['tax_class_id'] . "' AND tax_rate_id = '" . (int) $tax_rate_5_id . "'");
-//
-//            if ($tax_rule_5_query->num_rows == 0) {
-//                $this->db->query("INSERT INTO " . DB_PREFIX . "tax_rule SET tax_class_id = '" . (int) $tax_class_5['tax_class_id'] . "', tax_rate_id = '" . (int) $tax_rate_5_id . "', based = 'shipping', priority = '0'");
-//            }
-//        }
-//    }
-//}
 
+        // Add tax classes and rates
+        if ($geo_zone_id) {
+            $this->load->model('localisation/tax_rate');
+            // Add tax rates
+            $this->tax_23['geo_zone_id'] = $geo_zone_id;
+            $this->tax_23['tax_rate_customer_group'] = array($this->config->get('config_customer_group_id'));
+            $tax_rate_23_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 23%'");
+            if ($tax_rate_23_query->num_rows == 0) {
+                $this->model_localisation_tax_rate->addTaxRate($this->tax_23);
+                $tax_rate_23_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 23%'");
+                $tax_rate_23_id = $tax_rate_23_query->row['tax_rate_id'];
+            } else {
+                $tax_rate_23_id = $tax_rate_23_query->row['tax_rate_id'];
+            }
+
+            $this->tax_8['geo_zone_id'] = $geo_zone_id;
+            $this->tax_8['tax_rate_customer_group'] = array($this->config->get('config_customer_group_id'));
+            $tax_rate_8_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 8%'");
+            if ($tax_rate_8_query->num_rows == 0) {
+                $this->model_localisation_tax_rate->addTaxRate($this->tax_8);
+                $tax_rate_8_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 8%'");
+                $tax_rate_8_id = $tax_rate_8_query->row['tax_rate_id'];
+            } else {
+                $tax_rate_8_id = $tax_rate_8_query->row['tax_rate_id'];
+            }
+
+            $this->tax_5['geo_zone_id'] = $geo_zone_id;
+            $this->tax_5['tax_rate_customer_group'] = array($this->config->get('config_customer_group_id'));
+            $tax_rate_5_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 5%'");
+            if ($tax_rate_5_query->num_rows == 0) {
+                $this->model_localisation_tax_rate->addTaxRate($this->tax_5);
+                $tax_rate_5_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 5%'");
+                $tax_rate_5_id = $tax_rate_5_query->row['tax_rate_id'];
+            } else {
+                $tax_rate_5_id = $tax_rate_5_query->row['tax_rate_id'];
+            }
+
+
+            $this->load->model('localisation/tax_class');
+            // Add tax classes
+            $this->tax_class_23['tax_rule'] = array(
+                array(
+                    'tax_rate_id' => $tax_rate_23_id,
+                    'based' => 'shipping',
+                    'priority' => '0'
+                )
+            );
+            $tax_class_23_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_class WHERE title = 'VAT 23%'");
+            if ($tax_class_23_query->num_rows == 0) {
+                $this->model_localisation_tax_class->addTaxClass($this->tax_class_23);
+            } elseif ($tax_class_23_query->num_rows > 0) {
+                foreach ($tax_class_23_query->rows as $tax_class_23) {
+                    $tax_rule_23_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_rule WHERE tax_class_id = '" . (int) $tax_class_23['tax_class_id'] . "' AND tax_rate_id = '" . (int) $tax_rate_23_id . "'");
+                    if ($tax_rule_23_query->num_rows == 0) {
+                        $this->db->query("INSERT INTO " . DB_PREFIX . "tax_rule SET tax_class_id = '" . (int) $tax_class_23['tax_class_id'] . "', tax_rate_id = '" . (int) $tax_rate_23_id . "', based = 'shipping', priority = '0'");
+                    }
+                }
+            }
+
+            $this->tax_class_8['tax_rule'] = array(
+                array(
+                    'tax_rate_id' => $tax_rate_8_id,
+                    'based' => 'shipping',
+                    'priority' => '0'
+                )
+            );
+            $tax_class_8_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_class WHERE title = 'VAT 8%'");
+            if ($tax_class_8_query->num_rows == 0) {
+                $this->model_localisation_tax_class->addTaxClass($this->tax_class_8);
+            } elseif ($tax_class_8_query->num_rows > 0) {
+                foreach ($tax_class_8_query->rows as $tax_class_8) {
+                    $tax_rule_8_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_rule WHERE tax_class_id = '" . (int) $tax_class_8['tax_class_id'] . "' AND tax_rate_id = '" . (int) $tax_rate_8_id . "'");
+                    if ($tax_rule_8_query->num_rows == 0) {
+                        $this->db->query("INSERT INTO " . DB_PREFIX . "tax_rule SET tax_class_id = '" . (int) $tax_class_8['tax_class_id'] . "', tax_rate_id = '" . (int) $tax_rate_8_id . "', based = 'shipping', priority = '0'");
+                    }
+                }
+            }
+            
+            $this->tax_class_5['tax_rule'] = array(
+                array(
+                    'tax_rate_id' => $tax_rate_5_id,
+                    'based' => 'shipping',
+                    'priority' => '0'
+                )
+            );
+            $tax_class_5_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_class WHERE title = 'VAT 5%'");
+            if ($tax_class_5_query->num_rows == 0) {
+                $this->model_localisation_tax_class->addTaxClass($this->tax_class_5);
+            } elseif ($tax_class_5_query->num_rows > 0) {
+                foreach ($tax_class_5_query->rows as $tax_class_5) {
+                    $tax_rule_5_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_rule WHERE tax_class_id = '" . (int) $tax_class_5['tax_class_id'] . "' AND tax_rate_id = '" . (int) $tax_rate_5_id . "'");
+                    if ($tax_rule_5_query->num_rows == 0) {
+                        $this->db->query("INSERT INTO " . DB_PREFIX . "tax_rule SET tax_class_id = '" . (int) $tax_class_5['tax_class_id'] . "', tax_rate_id = '" . (int) $tax_rate_5_id . "', based = 'shipping', priority = '0'");
+                    }
+                }
+            }
+        }
     }
 
     public function uninstall()
     {
 
-    }
 
+
+
+    }
 }
