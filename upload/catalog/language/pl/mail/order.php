@@ -1,0 +1,35 @@
+<?php
+// Text
+$_['text_new_subject']          = '%s - Zamówienia %s';
+$_['text_new_greeting']         = 'Dziękujemy za zainteresowanie produktami %s. Zamówienie zostało przyjęte i zostanie zrealizowane po potwierdzeniu zapłaty.';
+$_['text_new_received']         = 'Otrzymano wiadomość o  zamówieniu.';
+$_['text_new_link']             = 'Aby wyświetlić szczegóły zamówienia kliknij na poniższy link:';
+$_['text_new_order_detail']     = 'Szczegóły Zamówienia';
+$_['text_new_instruction']      = 'Instrukcje';
+$_['text_new_order_id']         = 'Nr zamówienia:';
+$_['text_new_date_added']       = 'Data dodania:';
+$_['text_new_order_status']     = 'Status zamówienia:';
+$_['text_new_payment_method']   = 'Metoda płatności:';
+$_['text_new_shipping_method']  = 'Sposób wysyłki:';
+$_['text_new_email']  			= 'E-mail:';
+$_['text_new_telephone']  		= 'Telefon:';
+$_['text_new_ip']  				= 'Adres IP:';
+$_['text_new_payment_address']  = 'Adres płatności';
+$_['text_new_shipping_address'] = 'Adres wysyłki';
+$_['text_new_products']         = 'Produkty';
+$_['text_new_product']          = 'Produkt';
+$_['text_new_model']            = 'Model';
+$_['text_new_quantity']         = 'Ilość';
+$_['text_new_price']            = 'Cena';
+$_['text_new_order_total']      = 'Podsumowanie zamówienia';
+$_['text_new_total']            = 'Razem';
+$_['text_new_download']         = 'Po potwierdzeniu wpłaty możesz kliknąć na poniższy link, aby uzyskać dostęp do swoich produktów do pobrania:';
+$_['text_new_comment']          = 'Są uwagi do zamówienia:';
+$_['text_new_footer']           = ' Jeśli masz jakiekolwiek pytania lub uwagi prosimy o odpowiedź na ten e-mail,';
+$_['text_update_subject']       = '%s - aktualizacjia zamówienia %s';
+$_['text_update_order']         = 'Nr zamówienia:';
+$_['text_update_date_added']    = 'Data zamówienia:';
+$_['text_update_order_status']  = 'Zamówienie zostało zaktualizowane do następującego statusu:';
+$_['text_update_comment']       = 'Są uwagi do zamówienia:';
+$_['text_update_link']          = 'Aby obejrzeć szczegóły zamówienia kliknij na poniższy link:';
+$_['text_update_footer']        = 'Jeśli masz jakiekolwiek pytania lub uwagi prosimy o odpowiedź na ten e-mail.';
