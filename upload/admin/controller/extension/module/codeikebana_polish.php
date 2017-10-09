@@ -289,7 +289,6 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
 
     public function uninstall()
     {
-        $this->log->write('uninstall');
         // retrive saved id's
         $this->load->model('setting/setting');
         $module_settings = $this->model_setting_setting->getSetting('codeikebana_polish');
