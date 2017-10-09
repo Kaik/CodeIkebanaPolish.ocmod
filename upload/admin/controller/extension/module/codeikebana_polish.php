@@ -11,6 +11,7 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
     private $language_pl = array(
         'name' => 'Polski',
         'code' => 'pl',
+        'locale' => 'pl-PL,UTF-8',
         'sort_order' => '1',
         'status' => '1'
     );
@@ -99,11 +100,13 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
         'rate' => 23.0,
         'type' => 'P',
     );
+
     private $tax_8 = array(
         'name' => 'VAT 8%',
         'rate' => 8,
         'type' => 'P',
     );
+
     private $tax_5 = array(
         'name' => 'VAT 5%',
         'rate' => 5,
@@ -127,21 +130,17 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
 
     public function install()
     {
+        // we will save ids in settings for future removeall
+        $this->load->model('setting/setting');
         $this->load->model('localisation/language');
-        $languages_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "language WHERE code = 'pl'");
-        if ($languages_query->num_rows == 0) {
-            $language_id = $this->model_localisation_language->addLanguage($this->language_pl);
-        } elseif ($languages_query->num_rows == 1) {
-            $language_id = $languages_query->row['language_id'];
-        }
+
+        // Language
+        $language_id = $this->model_localisation_language->addLanguage($this->language_pl);
 
         // Currency
         $this->load->model('localisation/currency');
-        $currencies_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "currency WHERE code = 'PLN'");
-        if ($currencies_query->num_rows == 0) {
-            $this->model_localisation_currency->addCurrency($this->currency_pl);
-            $this->model_localisation_currency->refresh(true);
-        }
+        $currency_id = $this->model_localisation_currency->addCurrency($this->currency_pl);
+        $this->model_localisation_currency->refresh(true);
 
         // Edit stock statuses
         $this->load->model('localisation/stock_status');
@@ -198,19 +197,6 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
             }
         }
 
-        // Add geo zone
-        if ($language_id) {
-            $this->load->model('localisation/geo_zone');
-            $geo_zone_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "geo_zone WHERE name = 'PL VAT'");
-            if ($geo_zone_query->num_rows == 0) {
-                $this->model_localisation_geo_zone->addGeoZone($this->geoZone);
-                $geo_zone_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "geo_zone WHERE name = 'PL VAT'");
-                $geo_zone_id = $geo_zone_query->row['geo_zone_id'];
-            } else {
-                $geo_zone_id = $geo_zone_query->row['geo_zone_id'];
-            }
-        }
-
         // Edit length class
         $this->load->model('localisation/length_class');
         $length_class_query = $this->model_localisation_length_class->getLengthClasses();
@@ -233,46 +219,32 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
             }
         }
 
+        // Add geo zone
+        if ($language_id) {
+            $this->load->model('localisation/geo_zone');
+            $geo_zone_id = $this->model_localisation_geo_zone->addGeoZone($this->geoZone);
+        }
+
         // Add tax classes and rates
         if ($geo_zone_id) {
-            $this->load->model('localisation/tax_rate');
             // Add tax rates
+            $this->load->model('localisation/tax_rate');
+            // Add 23
             $this->tax_23['geo_zone_id'] = $geo_zone_id;
             $this->tax_23['tax_rate_customer_group'] = array($this->config->get('config_customer_group_id'));
-            $tax_rate_23_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 23%'");
-            if ($tax_rate_23_query->num_rows == 0) {
-                $this->model_localisation_tax_rate->addTaxRate($this->tax_23);
-                $tax_rate_23_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 23%'");
-                $tax_rate_23_id = $tax_rate_23_query->row['tax_rate_id'];
-            } else {
-                $tax_rate_23_id = $tax_rate_23_query->row['tax_rate_id'];
-            }
-
+            $tax_rate_23_id = $this->model_localisation_tax_rate->addTaxRate($this->tax_23);
+            // Add 8
             $this->tax_8['geo_zone_id'] = $geo_zone_id;
             $this->tax_8['tax_rate_customer_group'] = array($this->config->get('config_customer_group_id'));
-            $tax_rate_8_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 8%'");
-            if ($tax_rate_8_query->num_rows == 0) {
-                $this->model_localisation_tax_rate->addTaxRate($this->tax_8);
-                $tax_rate_8_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 8%'");
-                $tax_rate_8_id = $tax_rate_8_query->row['tax_rate_id'];
-            } else {
-                $tax_rate_8_id = $tax_rate_8_query->row['tax_rate_id'];
-            }
-
+            $tax_rate_8_id = $this->model_localisation_tax_rate->addTaxRate($this->tax_8);
+            // Add 5
             $this->tax_5['geo_zone_id'] = $geo_zone_id;
             $this->tax_5['tax_rate_customer_group'] = array($this->config->get('config_customer_group_id'));
-            $tax_rate_5_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 5%'");
-            if ($tax_rate_5_query->num_rows == 0) {
-                $this->model_localisation_tax_rate->addTaxRate($this->tax_5);
-                $tax_rate_5_query = $this->db->query("SELECT tax_rate_id FROM " . DB_PREFIX . "tax_rate WHERE geo_zone_id = '" . (int) $geo_zone_id . "' AND name = 'VAT 5%'");
-                $tax_rate_5_id = $tax_rate_5_query->row['tax_rate_id'];
-            } else {
-                $tax_rate_5_id = $tax_rate_5_query->row['tax_rate_id'];
-            }
+            $tax_rate_5_id = $this->model_localisation_tax_rate->addTaxRate($this->tax_5);
 
-
-            $this->load->model('localisation/tax_class');
             // Add tax classes
+            $this->load->model('localisation/tax_class');
+            // 23
             $this->tax_class_23['tax_rule'] = array(
                 array(
                     'tax_rate_id' => $tax_rate_23_id,
@@ -280,18 +252,8 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
                     'priority' => '0'
                 )
             );
-            $tax_class_23_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_class WHERE title = 'VAT 23%'");
-            if ($tax_class_23_query->num_rows == 0) {
-                $this->model_localisation_tax_class->addTaxClass($this->tax_class_23);
-            } elseif ($tax_class_23_query->num_rows > 0) {
-                foreach ($tax_class_23_query->rows as $tax_class_23) {
-                    $tax_rule_23_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_rule WHERE tax_class_id = '" . (int) $tax_class_23['tax_class_id'] . "' AND tax_rate_id = '" . (int) $tax_rate_23_id . "'");
-                    if ($tax_rule_23_query->num_rows == 0) {
-                        $this->db->query("INSERT INTO " . DB_PREFIX . "tax_rule SET tax_class_id = '" . (int) $tax_class_23['tax_class_id'] . "', tax_rate_id = '" . (int) $tax_rate_23_id . "', based = 'shipping', priority = '0'");
-                    }
-                }
-            }
-
+            $tax_class_23_id = $this->model_localisation_tax_class->addTaxClass($this->tax_class_23);
+            // 8
             $this->tax_class_8['tax_rule'] = array(
                 array(
                     'tax_rate_id' => $tax_rate_8_id,
@@ -299,18 +261,8 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
                     'priority' => '0'
                 )
             );
-            $tax_class_8_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_class WHERE title = 'VAT 8%'");
-            if ($tax_class_8_query->num_rows == 0) {
-                $this->model_localisation_tax_class->addTaxClass($this->tax_class_8);
-            } elseif ($tax_class_8_query->num_rows > 0) {
-                foreach ($tax_class_8_query->rows as $tax_class_8) {
-                    $tax_rule_8_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_rule WHERE tax_class_id = '" . (int) $tax_class_8['tax_class_id'] . "' AND tax_rate_id = '" . (int) $tax_rate_8_id . "'");
-                    if ($tax_rule_8_query->num_rows == 0) {
-                        $this->db->query("INSERT INTO " . DB_PREFIX . "tax_rule SET tax_class_id = '" . (int) $tax_class_8['tax_class_id'] . "', tax_rate_id = '" . (int) $tax_rate_8_id . "', based = 'shipping', priority = '0'");
-                    }
-                }
-            }
-            
+            $tax_class_8_id = $this->model_localisation_tax_class->addTaxClass($this->tax_class_8);
+            // 5
             $this->tax_class_5['tax_rule'] = array(
                 array(
                     'tax_rate_id' => $tax_rate_5_id,
@@ -318,25 +270,64 @@ class ControllerExtensionModuleCodeIkebanaPolish extends Controller
                     'priority' => '0'
                 )
             );
-            $tax_class_5_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_class WHERE title = 'VAT 5%'");
-            if ($tax_class_5_query->num_rows == 0) {
-                $this->model_localisation_tax_class->addTaxClass($this->tax_class_5);
-            } elseif ($tax_class_5_query->num_rows > 0) {
-                foreach ($tax_class_5_query->rows as $tax_class_5) {
-                    $tax_rule_5_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "tax_rule WHERE tax_class_id = '" . (int) $tax_class_5['tax_class_id'] . "' AND tax_rate_id = '" . (int) $tax_rate_5_id . "'");
-                    if ($tax_rule_5_query->num_rows == 0) {
-                        $this->db->query("INSERT INTO " . DB_PREFIX . "tax_rule SET tax_class_id = '" . (int) $tax_class_5['tax_class_id'] . "', tax_rate_id = '" . (int) $tax_rate_5_id . "', based = 'shipping', priority = '0'");
-                    }
-                }
-            }
+            $tax_class_5_id = $this->model_localisation_tax_class->addTaxClass($this->tax_class_5);
         }
+
+        $toSaveData = ['codeikebana_polish_language_id'     => $language_id,
+                       'codeikebana_polish_currency_id'     => $currency_id,
+                       'codeikebana_polish_geo_zone_id'     => $geo_zone_id,
+                       'codeikebana_polish_tax_rate_23_id'  => $tax_rate_23_id,
+                       'codeikebana_polish_tax_rate_8_id'   => $tax_rate_8_id,
+                       'codeikebana_polish_tax_rate_5_id'   => $tax_rate_5_id,
+                       'codeikebana_polish_tax_class_23_id' => $tax_class_23_id,
+                       'codeikebana_polish_tax_class_8_id'  => $tax_class_8_id,
+                       'codeikebana_polish_tax_class_5_id'  => $tax_class_5_id
+        ];
+
+        $this->model_setting_setting->editSetting('codeikebana_polish', $toSaveData);
     }
 
     public function uninstall()
     {
+        $this->log->write('uninstall');
+        // retrive saved id's
+        $this->load->model('setting/setting');
+        $module_settings = $this->model_setting_setting->getSetting('codeikebana_polish');
+        // Language
+        $this->load->model('localisation/language');
+        $this->model_localisation_language->deleteLanguage($module_settings['codeikebana_polish_language_id']);
 
+        // Currency
+        $this->load->model('localisation/currency');
+        $this->model_localisation_currency->deleteCurrency($module_settings['codeikebana_polish_currency_id']);
 
+        // reveresed order tax class - tax rate - geo zone
 
+        // tax classes
+        $this->load->model('localisation/tax_class');
+        // 23
+        $this->model_localisation_tax_class->deleteTaxClass($module_settings['codeikebana_polish_tax_class_23_id']);
+        // 8
+        $this->model_localisation_tax_class->deleteTaxClass($module_settings['codeikebana_polish_tax_class_8_id']);
+        // 5
+        $this->model_localisation_tax_class->deleteTaxClass($module_settings['codeikebana_polish_tax_class_5_id']);
 
+        // tax rates
+        $this->load->model('localisation/tax_rate');
+        // 23
+        $this->model_localisation_tax_rate->deleteTaxRate($module_settings['codeikebana_polish_tax_rate_23_id']);
+        // 8
+        $this->model_localisation_tax_rate->deleteTaxRate($module_settings['codeikebana_polish_tax_rate_8_id']);
+        // 5
+        $this->model_localisation_tax_rate->deleteTaxRate($module_settings['codeikebana_polish_tax_rate_5_id']);
+
+        // Add geo zone
+        $this->load->model('localisation/geo_zone');
+        $this->model_localisation_geo_zone->deleteGeoZone($module_settings['codeikebana_polish_geo_zone_id']);
+
+        // remove settings
+        $this->model_setting_setting->deleteSetting('codeikebana_polish');
+
+        //done! everything else will be deleted automatically during save
     }
 }
